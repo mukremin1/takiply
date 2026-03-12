@@ -1,0 +1,11 @@
+{
+  "appId": "com.takiply",
+  "appName": "Takiply",
+  "webDir": "dist",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": ["google.com", "apple.com"]
+    }
+  }
+}

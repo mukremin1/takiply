@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.android-home/
+.gradle-user-home/
+.env
+.env.*
+!.env.example
+.vercel/

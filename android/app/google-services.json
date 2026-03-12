@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "489141779565",
+    "project_id": "takiply",
+    "storage_bucket": "takiply.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489141779565:android:b72d1750472ff00485d364",
+        "android_client_info": {
+          "package_name": "com.takiply"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489141779565-hf9cb5g9vtaa93ov9u4si195bafsidlj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.takiply",
+            "certificate_hash": "0284e314575c841a08c9235a983dbcb15b7a5ef2"
+          }
+        },
+        {
+          "client_id": "489141779565-eu2ugu9bm1u8q8n80pn9u67l3ged3e66.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJrhoMTqSXN12L2BMEb2f5GeYbBFkuJEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489141779565-eu2ugu9bm1u8q8n80pn9u67l3ged3e66.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
