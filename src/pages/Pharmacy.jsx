@@ -369,7 +369,7 @@ function SummaryIcon({ kind }) {
   if (kind === "favorite") {
     return (
       <svg {...commonProps}>
-        <path d="m12 4 2.3 4.7 5.2.8-3.8 3.7.9 5.2-4.6-2.4-4.6 2.4.9-5.2-3.8-3.7 5.2-.8Z" />
+        <path d="m12 17.27-4.15 2.18.79-4.6L5.3 11.6l4.62-.67L12 6.73l2.08 4.2 4.62.67-3.34 3.25.79 4.6L12 17.27z" />
       </svg>
     );
   }
@@ -965,6 +965,44 @@ export default function Pharmacy() {
 
     try {
       const dutyData = await getOnDutyPharmacies({ city, district });
+
+      // ✅ DEBUG: Nöbetçi Eczane Koordinat Kontrolü
+      console.log("📍 NÖBETÇI ECZANE VERİ ANALIZI");
+      console.log("─".repeat(50));
+      console.log(`✅ Toplam nöbetçi eczane: ${dutyData.length}`);
+
+      if (dutyData.length > 0) {
+        console.log("\n📌 İlk 3 Eczane Örneği:");
+        dutyData.slice(0, 3).forEach((pharmacy, idx) => {
+          console.log(`\n  ${idx + 1}. ${pharmacy.name}`);
+          console.log(`     Enlem: ${pharmacy.latitude} (${typeof pharmacy.latitude})`);
+          console.log(`     Boylam: ${pharmacy.longitude} (${typeof pharmacy.longitude})`);
+          console.log(`     Adres: ${pharmacy.address}`);
+          console.log(`     Durum: ${pharmacy.status}`);
+          console.log(`     Kaynak: ${pharmacy.source}`);
+        });
+        console.log("\n" + "─".repeat(50));
+      }
+
+      // Tüm eczanelerin koordinat geçerliliğini kontrol et
+      const validCoords = dutyData.filter(p =>
+        Number.isFinite(p.latitude) && Number.isFinite(p.longitude)
+      );
+      const invalidCoords = dutyData.filter(p =>
+        !Number.isFinite(p.latitude) || !Number.isFinite(p.longitude)
+      );
+
+      console.log(`\n✅ Geçerli koordinatlı: ${validCoords.length}`);
+      console.log(`❌ Geçersiz koordinatlı: ${invalidCoords.length}`);
+
+      if (invalidCoords.length > 0) {
+        console.warn("⚠️ Geçersiz koordinatlı eczaneler:", invalidCoords.map(p => ({
+          name: p.name,
+          lat: p.latitude,
+          lng: p.longitude
+        })));
+      }
+
       setDebugStats((current) => ({
         ...current,
         nearbyCount: 0,
@@ -993,6 +1031,7 @@ export default function Pharmacy() {
         setLocationStatus(`${city} / ${district} için nöbetçi eczane bulunamadı.`);
       }
     } catch (error) {
+      console.error("❌ Nöbetçi eczane alınırken hata:", error);
       const fallback = buildFallbackPharmacies({ force: true });
       const errorMessage =
         error instanceof Error && error.message
