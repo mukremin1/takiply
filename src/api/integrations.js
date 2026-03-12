@@ -820,25 +820,71 @@ async function fetchFromNamedLocation(city, district, origin) {
 function mapDutyPharmacyResults(items, origin) {
   return (Array.isArray(items) ? items : [])
     .map((item, index) => {
-      const latitude = Number(item.loc?.split(",")?.[0] ?? item.latitude ?? item.lat);
-      const longitude = Number(item.loc?.split(",")?.[1] ?? item.longitude ?? item.lng ?? item.lon);
+      // DEBUG: Veri yapısını kontrol et - ilk item'i logla
+      if (index === 0) {
+        console.log("🔍 CollectAPI Sample Item (İlk Eczane):", JSON.stringify(item, null, 2));
+      }
 
+      // Koordinat ayrıştırma - birden fazla format destekle
+      let latitude = null;
+      let longitude = null;
+
+      // Format 1: "lat,lng" string (LOC alanı)
+      if (item.loc && typeof item.loc === 'string') {
+        const locParts = item.loc.split(',');
+        if (locParts.length === 2) {
+          const parsedLat = parseFloat(locParts[0]?.trim());
+          const parsedLng = parseFloat(locParts[1]?.trim());
+          if (Number.isFinite(parsedLat) && Number.isFinite(parsedLng)) {
+            latitude = parsedLat;
+            longitude = parsedLng;
+          }
+        }
+      }
+
+      // Format 2: Ayrı latitude/longitude alanları
+      if (latitude === null || longitude === null) {
+        const lat = parseFloat(item.latitude ?? item.lat);
+        const lng = parseFloat(item.longitude ?? item.lng ?? item.lon);
+        if (Number.isFinite(lat)) latitude = lat;
+        if (Number.isFinite(lng)) longitude = lng;
+      }
+
+      // Koordinat validasyonu
       if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        console.warn(`⚠️ UYARI: Koordinat bulunamadı veya geçersiz - ${item.name}`, {
+          name: item.name,
+          loc: item.loc,
+          latitude: item.latitude,
+          latitude_type: typeof item.latitude,
+          longitude: item.longitude,
+          longitude_type: typeof item.longitude,
+          lat: item.lat,
+          lat_type: typeof item.lat,
+          lng: item.lng,
+          lng_type: typeof item.lng,
+          lon: item.lon,
+          lon_type: typeof item.lon,
+          parsed_latitude: latitude,
+          parsed_longitude: longitude
+        });
         return null;
       }
 
+      // Distance hesapla
       const hasOrigin =
         origin && typeof origin.latitude === "number" && typeof origin.longitude === "number";
       const distanceKm = hasOrigin
         ? getDistanceKm(origin.latitude, origin.longitude, latitude, longitude)
         : null;
 
+      // Sonuç objesi - KOORDİNATLAR HER ZAMAN NUMBER
       return {
         id: `duty-${item.name ?? "eczane"}-${index}`,
         name: getDisplayText(item.name) || "Nöbetçi Eczane",
         status: "Nöbetçi",
-        latitude,
-        longitude,
+        latitude: Number(latitude),     // ✅ FLOAT (number)
+        longitude: Number(longitude),   // ✅ FLOAT (number)
         address: getDisplayText(item.address),
         phone: getDisplayText(item.phone),
         openingHours: getDisplayText(item.openingHours || item.opening),
