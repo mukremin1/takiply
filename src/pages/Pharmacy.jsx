@@ -483,9 +483,8 @@ function PharmacyMap({
 
   useEffect(() => {
     if (!activePharmacy || !userCoords) {
-      setRoutePath([]);
-
       const resetRouteState = window.setTimeout(() => {
+        setRoutePath([]);
         setRouteState({ loading: false, error: "", summary: "" });
       }, 0);
 
@@ -1762,30 +1761,6 @@ export default function Pharmacy() {
                   disabled={loading || !manualCity || !manualDistrict}
                 >
                   Sehre gore nobetci ara
-                </button>
-              </div>
-            ) : null}
-            {false && activeTab === "onDuty" ? (
-              <div className="pharmacy-manual-location">
-                <input
-                  type="text"
-                  list="pharmacy-city-options"
-                  value={manualCity}
-                  onChange={(event) => {
-                    setManualCity(event.target.value);
-                    setManualDistrict("");
-                  }}
-                  placeholder="Şehir"
-                />
-                <input
-                  type="text"
-                  list="pharmacy-district-options"
-                  value={manualDistrict}
-                  onChange={(event) => setManualDistrict(event.target.value)}
-                  placeholder="İlçe"
-                />
-                <button type="button" onClick={loadOnDutyByManualLocation} disabled={loading}>
-                  Şehre göre nöbetçi ara
                 </button>
               </div>
             ) : null}

@@ -53,6 +53,24 @@ Android calistirma:
 npm run mobile:android
 ```
 
+Play Console icin AAB uretme:
+
+```bash
+npm run android:aab
+```
+
+AAB uretimi onkosulleri:
+
+- JDK 21 onerilir.
+- `dl.google.com` ve `repo.maven.apache.org` adreslerine erisim gerekli.
+- Proxy kullaniliyorsa Gradle/Maven isteklerine 403 vermemelidir.
+
+AAB cikti yolu:
+
+```bash
+android/app/build/outputs/bundle/release/app-release.aab
+```
+
 iOS calistirma:
 
 ```bash
