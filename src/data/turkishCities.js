@@ -150,10 +150,7 @@ export const cityDistricts = {
   "Kırşehir": ["Akçakent", "Akpınar", "Boztepe", "Çiçekdağı", "Kırşehir Merkez", "Mucur"],
   "Burdur": ["Ağlasun", "Altınyayla", "Burdur Merkez", "Bucak", "Çavdır", "Çeltikçi", "Gölhisar", "Karamanlı", "Kemer", "Tefenni", "Yeşilova"],
   "Uşak": ["Banaz", "Eşme", "Karahallı", "Sivaslı", "Ulubey", "Uşak Merkez"],
-  "Kayseri": ["Kocasinan", "Melikgazi", "Talas", "Sarıoğlan", "Sarız", "Bünyan", "Develi", "Akkışla", "Felahiye", "Özvatan", "Yeşilhisar", "İncesu", "Sarıoğlan"],
-  "Osmaniye": ["Bahçe", "Düziçi", "Hasanbeyli", "Kadirli", "Merkez", "Sumbas", "Toprakkale"],
-  "Samsun": ["Atakum", "Canik", "İlkadım", "Tekkeköy", "Bafra", "Çarşamba", "Terme", "Vezirköpru", "Havza", "Ladik"],
-  "Düzce": ["Akçakoca", "Düzce Merkez", "Kaynaşlı", "Gölyaka", "Çilimli", "Yığılca", "Gümüşova"]
+  "Osmaniye": ["Bahçe", "Düziçi", "Hasanbeyli", "Kadirli", "Merkez", "Sumbas", "Toprakkale"]
 };
 
 export const getCityByName = (name) => {
@@ -206,4 +203,3 @@ export function normalizeLocationName(value) {
     .replace(/\s+/g, " ")
     .trim();
 }
-
