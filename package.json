@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "npm run lint && npm run build",
     "preview": "vite preview",
     "lint": "eslint .",
+    "android:aab": "npm run build && npx cap sync android && cd android && ./gradlew bundleRelease",
     "mobile:sync": "npm run build && npx cap sync",
     "mobile:android": "node scripts/ensure-android-sdk.mjs && npm run build && npx cap run android",
     "mobile:ios": "node scripts/ensure-ios-supported.mjs && npm run build && npx cap run ios"
