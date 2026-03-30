@@ -93,6 +93,31 @@ export default defineConfig(({ mode }) => {
     define: {
       __COLLECTAPI_KEY__: JSON.stringify(env.COLLECTAPI_KEY || "")
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes("node_modules")) {
+              return undefined;
+            }
+
+            if (id.includes("react") || id.includes("scheduler")) {
+              return "react-vendor";
+            }
+
+            if (id.includes("leaflet") || id.includes("@react-google-maps") || id.includes("@googlemaps")) {
+              return "maps-vendor";
+            }
+
+            if (id.includes("firebase")) {
+              return "firebase-vendor";
+            }
+
+            return "vendor";
+          }
+        }
+      }
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src")
