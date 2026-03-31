@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../lib/useAuth";
 import { readInitialSetupComplete } from "../lib/profile-storage";
@@ -10,6 +10,7 @@ const initialForm = {
 };
 
 const ONBOARDING_STORAGE_KEY = "takiply-onboarding-seen";
+const REAUTH_NOTICE_STORAGE_KEY = "takiply-security-reauth-notice";
 
 function getPostAuthRoute() {
   const hasSeenOnboarding = window.localStorage.getItem(ONBOARDING_STORAGE_KEY) === "true";
@@ -118,6 +119,18 @@ export default function Auth() {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const showAppleButton = true;
   const isCompactEmailView = showEmailForm && activeTab === "register";
+
+  useEffect(() => {
+    const mustReauth = window.localStorage.getItem(REAUTH_NOTICE_STORAGE_KEY) === "1";
+    if (!mustReauth) {
+      return;
+    }
+
+    window.localStorage.removeItem(REAUTH_NOTICE_STORAGE_KEY);
+    setShowEmailForm(true);
+    setActiveTab("login");
+    setError("Güvenlik amacıyla lütfen tekrar giriş yapın.");
+  }, []);
 
   if (isAuthenticated) {
     return <Navigate to={postAuthRoute} replace />;
@@ -445,3 +458,4 @@ export default function Auth() {
     </section>
   );
 }
+

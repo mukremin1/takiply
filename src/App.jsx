@@ -52,14 +52,14 @@ export default function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route element={<Layout />}>
-          <Route index element={<Navigate to="/home" replace />} />
+          <Route index element={<Navigate to="/auth" replace />} />
           {routes.map((route) => {
             const Component = route.component;
 
             return <Route key={route.path} path={route.path} element={renderRouteElement(Component)} />;
           })}
         </Route>
-        <Route path="*" element={<Navigate to={postAuthRoute} replace />} />
+        <Route path="*" element={<Navigate to="/auth" replace />} />
       </Routes>
     );
   }

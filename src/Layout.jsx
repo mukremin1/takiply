@@ -54,7 +54,11 @@ export default function Layout() {
   const { currentUser, signOut } = useAuth();
   const { isDark } = useTheme();
   const location = useLocation();
-  const immersiveRoutes = new Set(["/home", "/medications", "/pharmacy", "/progress", "/profile"]);
+  const immersiveRoutes = new Set(
+    routes
+      .map((item) => item.path)
+      .filter((path) => path !== "/onboarding" && path !== "/profile-setup")
+  );
   const isImmersiveRoute = immersiveRoutes.has(location.pathname);
 
   return (

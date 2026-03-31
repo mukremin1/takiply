@@ -1,32 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const FAQ_ITEMS = [
-  {
-    question: "İlaç hatırlatıcıları nasıl çalışır?",
-    answer: "İlaç saati geldiğinde bildirim alırsınız, dozu işaretlediğinizde kayıt güncellenir."
-  },
-  {
-    question: "e-Nabız entegrasyonu nasıl yapılır?",
-    answer: "Profildeki e-Nabız bağlantısı alanından eşleştirmeyi başlatabilirsiniz."
-  },
-  {
-    question: "Aile üyelerimi nasıl takip ederim?",
-    answer: "Ailem ekranından bağlantı kodu paylaşarak yakınlarınızı hesabınıza ekleyebilirsiniz."
-  },
-  {
-    question: "Verilerim güvende mi?",
-    answer: "Verileriniz uygulama içinde izin ve oturum kontrolleriyle korunur."
-  },
-  {
-    question: "Premium özellikler nelerdir?",
-    answer: "Premium; gelişmiş raporlar, aile takibi ve ek sağlık içgörüleri sunar."
-  },
-  {
-    question: "İlaç stoğumu nasıl takip ederim?",
-    answer: "Kalan miktarı güncel tuttuğunuzda uygulama stok azaldığında sizi uyarır."
-  }
-];
+import { FAQ_ITEMS } from "../data/supportContent";
+const SUPPORT_WHATSAPP_NUMBER = String(import.meta.env.VITE_SUPPORT_WHATSAPP_NUMBER || "905395263293").replace(/\D/g, "");
+const SUPPORT_WHATSAPP_TEXT = encodeURIComponent("Merhaba, Takiply canlı destek için yazıyorum.");
+const SUPPORT_WHATSAPP_LINK = `https://wa.me/${SUPPORT_WHATSAPP_NUMBER}?text=${SUPPORT_WHATSAPP_TEXT}`;
 
 function MessageIcon() {
   return (
@@ -81,18 +58,18 @@ export default function Help() {
         <article className="help-hero-card">
           <div>
             <h3>Yardıma mı ihtiyacınız var?</h3>
-            <p>Sık sorulan sorulara göz atın veya bizimle iletişime geçin.</p>
+            <p>Sık sorulan sorulara göz atın veya WhatsApp canlı destekle görüşün.</p>
           </div>
 
           <div className="help-action-row">
-            <button type="button" className="help-action-btn">
+            <a href={SUPPORT_WHATSAPP_LINK} target="_blank" rel="noreferrer" className="help-action-btn">
               <MessageIcon />
-              Canlı Destek
-            </button>
-            <button type="button" className="help-action-btn">
+              Canlı Destek (WhatsApp)
+            </a>
+            <a href="mailto:destek@takiply.com" className="help-action-btn" aria-label="destek@takiply.com adresine e-posta gönder">
               <MailIcon />
-              E-posta
-            </button>
+              destek@takiply.com
+            </a>
           </div>
         </article>
 

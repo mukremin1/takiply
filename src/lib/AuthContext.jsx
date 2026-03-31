@@ -17,8 +17,55 @@ import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { AuthContext } from "./auth-context";
 import { auth, firebaseConfigError } from "./firebase";
 
+const REAUTH_AT_STORAGE_KEY = "takiply-security-reauth-at";
+const REAUTH_NOTICE_STORAGE_KEY = "takiply-security-reauth-notice";
+const REAUTH_MIN_DAYS = 5;
+const REAUTH_MAX_DAYS = 12;
+
 function normalizeEmail(email) {
   return email.trim().toLowerCase();
+}
+
+function getRandomReauthTimestamp(now = Date.now()) {
+  const dayCount = Math.floor(Math.random() * (REAUTH_MAX_DAYS - REAUTH_MIN_DAYS + 1)) + REAUTH_MIN_DAYS;
+  const jitterHours = Math.floor(Math.random() * 24);
+  return now + (dayCount * 24 + jitterHours) * 60 * 60 * 1000;
+}
+
+function scheduleNextReauth() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(REAUTH_AT_STORAGE_KEY, String(getRandomReauthTimestamp()));
+}
+
+function markPeriodicReauthNotice() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(REAUTH_NOTICE_STORAGE_KEY, "1");
+}
+
+function shouldRequirePeriodicReauth(now = Date.now()) {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const rawTimestamp = window.localStorage.getItem(REAUTH_AT_STORAGE_KEY);
+  if (!rawTimestamp) {
+    scheduleNextReauth();
+    return false;
+  }
+
+  const targetTimestamp = Number(rawTimestamp);
+  if (!Number.isFinite(targetTimestamp)) {
+    scheduleNextReauth();
+    return false;
+  }
+
+  return now >= targetTimestamp;
 }
 
 function mapFirebaseError(error) {
@@ -36,6 +83,8 @@ function mapFirebaseError(error) {
     case "auth/user-not-found":
     case "auth/wrong-password":
       return "E-posta veya şifre hatalı.";
+    case "auth/network-request-failed":
+      return "Bağlantı hatası. İnternet bağlantınızı ve Firebase ayarlarınızı kontrol edin.";
     case "auth/popup-closed-by-user":
       return "Giriş penceresi kapatıldı.";
     case "auth/cancelled-popup-request":
@@ -84,7 +133,18 @@ export function AuthProvider({ children }) {
       return () => {};
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user && shouldRequirePeriodicReauth()) {
+        markPeriodicReauthNotice();
+        await firebaseSignOut(auth).catch(() => null);
+        if (Capacitor.isNativePlatform()) {
+          await FirebaseAuthentication.signOut().catch(() => null);
+        }
+        setCurrentUser(null);
+        setLoading(false);
+        return;
+      }
+
       setCurrentUser(formatUser(user));
       setLoading(false);
     });
@@ -99,6 +159,7 @@ export function AuthProvider({ children }) {
     try {
       const authInstance = getAuthOrThrow();
       const result = await signInWithEmailAndPassword(authInstance, normalizedEmail, password);
+      scheduleNextReauth();
       return formatUser(result.user);
     } catch (error) {
       throw new Error(mapFirebaseError(error));
@@ -115,6 +176,7 @@ export function AuthProvider({ children }) {
         await updateProfile(credential.user, { displayName: name.trim() });
       }
 
+      scheduleNextReauth();
       return formatUser({
         ...credential.user,
         displayName: name.trim() || credential.user.displayName
@@ -129,8 +191,11 @@ export function AuthProvider({ children }) {
       const authInstance = getAuthOrThrow();
 
       if (provider === "google" && Capacitor.isNativePlatform()) {
+        // Clear any cached Google session first so the account chooser can show all device accounts.
+        await FirebaseAuthentication.signOut().catch(() => null);
         const nativeResult = await FirebaseAuthentication.signInWithGoogle({
-          skipNativeAuth: true
+          skipNativeAuth: true,
+          useCredentialManager: true
         });
         const credential = nativeResult?.credential;
         const idToken = credential?.idToken;
@@ -142,11 +207,18 @@ export function AuthProvider({ children }) {
 
         const firebaseCredential = GoogleAuthProvider.credential(idToken || null, accessToken || null);
         const result = await signInWithCredential(authInstance, firebaseCredential);
+        scheduleNextReauth();
         return formatUser(result.user);
       }
 
       const providerInstance =
         provider === "google" ? new GoogleAuthProvider() : new OAuthProvider("apple.com");
+
+      if (provider === "google") {
+        providerInstance.setCustomParameters({
+          prompt: "select_account"
+        });
+      }
 
       if (provider === "apple") {
         providerInstance.addScope("email");
@@ -159,6 +231,7 @@ export function AuthProvider({ children }) {
       }
 
       const result = await signInWithPopup(authInstance, providerInstance);
+      scheduleNextReauth();
       return formatUser(result.user);
     } catch (error) {
       throw new Error(mapFirebaseError(error));

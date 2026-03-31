@@ -83,9 +83,7 @@ export default function Home() {
   return (
     <section className="home-screen">
       <p className="home-date">{todayLabel}</p>
-      <h2 className="home-greeting">
-        Merhaba, {displayName}! <span aria-hidden>👋</span>
-      </h2>
+      <h2 className="home-greeting">Merhaba, {displayName}!</h2>
 
       <div className="quick-grid">
         {quickActions.map((action) => (

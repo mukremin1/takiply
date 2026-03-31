@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getMedications } from "../api/integrations";
+import { getDrugInfoByBarcode, getMedications } from "../api/integrations";
 
 function PillIcon({ className = "h-8 w-8" }) {
   return (
@@ -30,6 +30,44 @@ function CameraIcon({ className = "h-5 w-5" }) {
 
 const BARCODE_FORMATS = ["ean_13", "ean_8", "upc_a", "upc_e", "code_128", "code_39", "itf", "codabar", "qr_code"];
 
+async function createBarcodeDetector() {
+  if (!("BarcodeDetector" in window)) {
+    return null;
+  }
+
+  const BarcodeDetectorApi = window.BarcodeDetector;
+  let formats = BARCODE_FORMATS;
+
+  if (typeof BarcodeDetectorApi.getSupportedFormats === "function") {
+    try {
+      const supported = await BarcodeDetectorApi.getSupportedFormats();
+      const preferred = BARCODE_FORMATS.filter((format) => supported.includes(format));
+
+      if (preferred.length > 0) {
+        formats = preferred;
+      } else if (supported.length > 0) {
+        formats = supported;
+      }
+    } catch {
+      // Some WebView versions can fail here; fall back to default detector init.
+    }
+  }
+
+  try {
+    if (formats.length > 0) {
+      return new BarcodeDetectorApi({ formats });
+    }
+  } catch {
+    // Fallback to default initialization when explicit format list is not accepted.
+  }
+
+  try {
+    return new BarcodeDetectorApi();
+  } catch {
+    return null;
+  }
+}
+
 export default function Medications() {
   const navigate = useNavigate();
   const [medications, setMedications] = useState([]);
@@ -42,6 +80,7 @@ export default function Medications() {
   const imageInputRef = useRef(null);
   const streamRef = useRef(null);
   const rafRef = useRef(null);
+  const resolvingBarcodeRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -85,16 +124,36 @@ export default function Medications() {
     }
   }, []);
 
-  const handleBarcodeDetected = useCallback((rawValue) => {
+  const handleBarcodeDetected = useCallback(async (rawValue) => {
+    if (resolvingBarcodeRef.current) {
+      return;
+    }
+
     const barcode = String(rawValue || "").trim();
 
     if (!barcode) {
       return;
     }
 
+    resolvingBarcodeRef.current = true;
     setLastScannedCode(barcode);
     setScannerOpen(false);
-    navigate(`/drug-info?barcode=${encodeURIComponent(barcode)}`);
+
+    let prefetchedDrug = null;
+
+    try {
+      prefetchedDrug = await getDrugInfoByBarcode(barcode);
+    } catch {
+      prefetchedDrug = null;
+    }
+
+    navigate(`/drug-info?barcode=${encodeURIComponent(barcode)}`, {
+      state: prefetchedDrug
+        ? {
+            prefetchedDrug
+          }
+        : undefined
+    });
   }, [navigate]);
 
   const handleManualBarcodeEntry = () => {
@@ -114,16 +173,11 @@ export default function Medications() {
       return;
     }
 
-    if (!("BarcodeDetector" in window)) {
-      stopScanner();
-      return;
-    }
-
     let isActive = true;
-    const barcodeDetector = new window.BarcodeDetector({ formats: BARCODE_FORMATS });
+    let barcodeDetector = null;
 
     const scanVideoFrame = async () => {
-      if (!isActive || !videoRef.current) {
+      if (!isActive || !videoRef.current || !barcodeDetector) {
         return;
       }
 
@@ -147,6 +201,18 @@ export default function Medications() {
 
     const startScanner = async () => {
       try {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          setScannerError("Bu cihazda kamera erişimi desteklenmiyor.");
+          return;
+        }
+
+        barcodeDetector = await createBarcodeDetector();
+
+        if (!barcodeDetector) {
+          setScannerError("Bu cihazda barkod algılama desteği bulunamadı.");
+          return;
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" }
@@ -177,13 +243,8 @@ export default function Medications() {
   }, [handleBarcodeDetected, scannerOpen, stopScanner]);
 
   const handleOpenScanner = () => {
+    resolvingBarcodeRef.current = false;
     setScannerError("");
-
-    if (!("BarcodeDetector" in window)) {
-      handleManualBarcodeEntry();
-      return;
-    }
-
     setScannerOpen(true);
   };
 
@@ -195,14 +256,15 @@ export default function Medications() {
       return;
     }
 
-    if (!("BarcodeDetector" in window)) {
-      setScannerError("Bu cihazda barkod algılama API desteği yok.");
-      return;
-    }
-
     try {
       const bitmap = await createImageBitmap(file);
-      const barcodeDetector = new window.BarcodeDetector({ formats: BARCODE_FORMATS });
+      const barcodeDetector = await createBarcodeDetector();
+
+      if (!barcodeDetector) {
+        setScannerError("Bu cihazda barkod algılama desteği yok.");
+        return;
+      }
+
       const detected = await barcodeDetector.detect(bitmap);
 
       if (!detected.length || !detected[0].rawValue) {

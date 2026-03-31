@@ -356,6 +356,22 @@ a {
   color: #12343e;
 }
 
+.home-main-light .home-date {
+  color: #45656f;
+}
+
+.home-main-light .home-greeting {
+  color: #163e47;
+}
+
+.home-main-light .reminder-head h3 {
+  color: #163e47;
+}
+
+.home-main-light .see-all-link {
+  color: #0f9f90;
+}
+
 .home-screen {
   min-height: 100%;
   display: flex;
@@ -365,7 +381,7 @@ a {
 
 .home-date {
   margin: 0;
-  color: #c3d7e0;
+  color: #d9e9f5;
   font-size: clamp(0.82rem, 1.2vw, 1rem);
 }
 
@@ -420,9 +436,9 @@ a {
 }
 
 .quick-label {
-  color: #dce9ee;
+  color: #edf6ff;
   font-size: clamp(0.82rem, 0.95vw, 0.98rem);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .reminder-head {
@@ -445,9 +461,9 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  color: #00e0be;
+  color: #2df0d1;
   font-size: clamp(0.95rem, 1.5vw, 1.25rem);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .empty-reminder-state {
@@ -484,7 +500,7 @@ a {
 
 .empty-reminder-state p {
   margin: 0;
-  color: #8eaab8;
+  color: #b8cad8;
   font-size: clamp(0.96rem, 1.35vw, 1.25rem);
 }
 
@@ -528,13 +544,13 @@ a {
   gap: 0.14rem;
   min-height: 58px;
   border-radius: 10px;
-  color: #c5d5ef;
-  font-size: 0.72rem;
-  font-weight: 500;
+  color: #dce8fb;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .home-nav-item-light {
-  color: #57737d;
+  color: #3f5964;
 }
 
 .home-nav-item svg {
@@ -731,6 +747,7 @@ a {
   background: rgba(2, 9, 24, 0.86);
   display: flex;
   align-items: flex-end;
+  padding-top: calc(var(--safe-top) + 0.5rem);
 }
 
 .medications-scanner-panel {
@@ -738,7 +755,10 @@ a {
   border-radius: 22px 22px 0 0;
   background: #07152f;
   border: 1px solid #1d3561;
-  padding: 1rem 1rem 1.2rem;
+  max-height: calc(100dvh - var(--safe-top) - 0.5rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem 1rem calc(var(--safe-bottom) + 1rem);
 }
 
 .medications-scanner-header {
@@ -803,6 +823,145 @@ a {
   margin: 0.7rem 0 0;
   color: #fca5a5;
   font-size: 0.88rem;
+}
+
+.add-medication-screen {
+  min-height: 100%;
+  color: #f5fbff;
+}
+
+.add-medication-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-weight: 600;
+}
+
+.add-medication-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
+}
+
+.add-medication-hero {
+  border: 1px solid #2e5790;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(11, 44, 84, 0.92) 0%, rgba(9, 35, 65, 0.88) 100%);
+  padding: 1.05rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.add-medication-hero-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(0, 217, 165, 0.12);
+  color: #0de3c0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.add-medication-hero h3 {
+  margin: 0;
+  color: #f7fdff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.add-medication-hero p {
+  margin: 0.35rem 0 0;
+  color: #a9c9d0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.add-medication-form {
+  border: 1px solid #274476;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(11, 34, 63, 0.95) 0%, rgba(9, 29, 53, 0.9) 100%);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.add-medication-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.add-medication-field span {
+  color: #d7e4fb;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.add-medication-input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #35527b;
+  border-radius: 14px;
+  background: rgba(18, 43, 76, 0.78);
+  color: #e6f0ff;
+  padding: 0 0.9rem;
+  outline: none;
+  font-size: 1rem;
+}
+
+.add-medication-input::placeholder {
+  color: #afc6e3;
+}
+
+.add-medication-input:focus {
+  border-color: #6aa6ff;
+}
+
+.add-medication-action-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.add-medication-cancel-btn,
+.add-medication-submit-btn {
+  min-height: 46px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.add-medication-cancel-btn {
+  border: 1px solid #415470;
+  background: rgba(31, 47, 71, 0.65);
+  color: #d3dceb;
+}
+
+.add-medication-submit-btn {
+  border: none;
+  background: #10dcb9;
+  color: #042f3a;
+}
+
+.add-medication-cancel-btn:disabled,
+.add-medication-submit-btn:disabled {
+  opacity: 0.7;
+}
+
+.add-medication-error {
+  margin: 0;
+  color: #fca5a5;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .add-medication-action-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .pharmacy-screen {
@@ -1892,9 +2051,213 @@ html[data-theme="light"] .profile-logout-btn {
   color: #c54965;
 }
 
+html[data-theme="light"] .medications-screen,
+html[data-theme="light"] .add-medication-screen,
+html[data-theme="light"] .pharmacy-screen,
+html[data-theme="light"] .progress-screen,
+html[data-theme="light"] .edit-profile-screen,
+html[data-theme="light"] .notification-settings-screen,
+html[data-theme="light"] .family-screen,
+html[data-theme="light"] .help-screen,
+html[data-theme="light"] .medical-disclaimer-screen,
+html[data-theme="light"] .terms-screen,
+html[data-theme="light"] .privacy-screen,
+html[data-theme="light"] .health-profile-screen {
+  color: #15353f;
+}
+
+html[data-theme="light"] .edit-profile-header h2,
+html[data-theme="light"] .medications-title,
+html[data-theme="light"] .add-medication-title,
+html[data-theme="light"] .pharmacy-title,
+html[data-theme="light"] .progress-head h2 {
+  color: #12343e;
+}
+
+html[data-theme="light"] .pharmacy-subtitle,
+html[data-theme="light"] .progress-head p,
+html[data-theme="light"] .edit-profile-email,
+html[data-theme="light"] .edit-profile-field span {
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .progress-feel-section h3,
+html[data-theme="light"] .medications-empty-state h4 {
+  color: #163e47;
+}
+
+html[data-theme="light"] .medications-empty-state p {
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .medications-search {
+  border-color: rgba(137, 181, 188, 0.48);
+  background: rgba(255, 255, 255, 0.9);
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .medications-search input {
+  color: #163e47;
+}
+
+html[data-theme="light"] .medications-search input::placeholder {
+  color: #7d98a2;
+}
+
+html[data-theme="light"] .medications-secondary-btn {
+  border-color: rgba(137, 181, 188, 0.48);
+  background: rgba(255, 255, 255, 0.9);
+  color: #163e47;
+}
+
+html[data-theme="light"] .medications-info-card {
+  border-color: rgba(96, 150, 212, 0.42);
+  background: rgba(239, 247, 255, 0.92);
+}
+
+html[data-theme="light"] .medications-info-card h3 {
+  color: #12343e;
+}
+
+html[data-theme="light"] .medications-info-card p {
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .add-medication-hero {
+  border-color: rgba(137, 181, 188, 0.48);
+  background: linear-gradient(180deg, rgba(239, 247, 255, 0.96) 0%, rgba(229, 242, 249, 0.94) 100%);
+}
+
+html[data-theme="light"] .add-medication-hero h3 {
+  color: #12343e;
+}
+
+html[data-theme="light"] .add-medication-hero p {
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .add-medication-form {
+  border-color: rgba(137, 181, 188, 0.48);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+html[data-theme="light"] .add-medication-field {
+  color: #163e47;
+}
+
+html[data-theme="light"] .add-medication-field span {
+  color: #163e47;
+}
+
+html[data-theme="light"] .add-medication-input {
+  border-color: rgba(137, 181, 188, 0.55);
+  background: #ffffff;
+  color: #163e47;
+}
+
+html[data-theme="light"] .add-medication-input::placeholder {
+  color: #7d98a2;
+}
+
+html[data-theme="light"] .add-medication-cancel-btn {
+  border-color: rgba(137, 181, 188, 0.48);
+  background: rgba(255, 255, 255, 0.9);
+  color: #163e47;
+}
+
+html[data-theme="light"] .pharmacy-tab-strip {
+  border-color: rgba(137, 181, 188, 0.42);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+html[data-theme="light"] .pharmacy-tab {
+  color: #52717c;
+}
+
+html[data-theme="light"] .pharmacy-tab small {
+  color: #6d8b96;
+}
+
+html[data-theme="light"] .pharmacy-sheet {
+  border-top-color: rgba(137, 181, 188, 0.5);
+  background: rgba(255, 255, 255, 0.93);
+}
+
+html[data-theme="light"] .pharmacy-sheet-handle {
+  background: rgba(98, 129, 138, 0.44);
+}
+
+html[data-theme="light"] .pharmacy-sheet-head h3 {
+  color: #12343e;
+}
+
+html[data-theme="light"] .pharmacy-sheet-head p,
+html[data-theme="light"] .pharmacy-sheet-status {
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .pharmacy-search {
+  border-top-color: rgba(137, 181, 188, 0.36);
+  border-bottom-color: rgba(137, 181, 188, 0.36);
+}
+
+html[data-theme="light"] .pharmacy-search svg {
+  color: #6e8c97;
+}
+
+html[data-theme="light"] .pharmacy-search input {
+  color: #163e47;
+}
+
+html[data-theme="light"] .pharmacy-search input::placeholder {
+  color: #7d98a2;
+}
+
+html[data-theme="light"] .pharmacy-manual-location input,
+html[data-theme="light"] .pharmacy-manual-location select {
+  border-color: rgba(137, 181, 188, 0.45);
+  background: rgba(255, 255, 255, 0.92);
+  color: #163e47;
+}
+
+html[data-theme="light"] .pharmacy-manual-location input::placeholder {
+  color: #7d98a2;
+}
+
+html[data-theme="light"] .pharmacy-card {
+  border-color: rgba(137, 181, 188, 0.45);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+html[data-theme="light"] .pharmacy-card.is-active {
+  border-color: rgba(25, 167, 156, 0.52);
+  background: rgba(232, 251, 247, 0.92);
+}
+
+html[data-theme="light"] .pharmacy-card h4 {
+  color: #12343e;
+}
+
+html[data-theme="light"] .pharmacy-card p,
+html[data-theme="light"] .pharmacy-empty-state {
+  color: #5f7d88;
+}
+
+html[data-theme="light"] .progress-chip {
+  border-color: rgba(137, 181, 188, 0.44);
+  background: rgba(255, 255, 255, 0.88);
+  color: #4f6b76;
+}
+
+html[data-theme="light"] .progress-chip.is-active {
+  border-color: rgba(20, 170, 152, 0.56);
+  background: rgba(226, 250, 245, 0.9);
+  color: #0f8f81;
+}
+
 .edit-profile-screen {
   min-height: 100%;
-  color: #ecfbff;
+  color: #eaf2ff;
   display: flex;
   flex-direction: column;
 }
@@ -1904,25 +2267,25 @@ html[data-theme="light"] .profile-logout-btn {
   grid-template-columns: 40px 1fr 40px;
   align-items: center;
   gap: 0.75rem;
-  padding-bottom: 0.95rem;
-  border-bottom: 1px solid rgba(49, 76, 96, 0.58);
+  padding: 0.25rem 0 0.4rem;
 }
 
 .edit-profile-header h2 {
   margin: 0;
   text-align: center;
   color: #f6fbff;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .edit-profile-back {
   width: 40px;
   height: 40px;
-  border: none;
+  border: 1px solid rgba(63, 83, 112, 0.64);
   border-radius: 999px;
-  background: rgba(19, 45, 57, 0.8);
-  color: #8ba9b8;
+  background: rgba(12, 33, 56, 0.86);
+  color: #d3e4f4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1933,7 +2296,7 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.15rem;
-  padding: 1.4rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .edit-profile-avatar-wrap {
@@ -1996,7 +2359,7 @@ html[data-theme="light"] .profile-logout-btn {
 }
 
 .edit-profile-field span {
-  color: #b7d3df;
+  color: #c6d8ef;
   font-size: 0.98rem;
   font-weight: 500;
 }
@@ -2004,21 +2367,21 @@ html[data-theme="light"] .profile-logout-btn {
 .edit-profile-field input {
   width: 100%;
   min-height: 48px;
-  border: 1px solid rgba(52, 79, 95, 0.72);
+  border: 1px solid #35527b;
   border-radius: 14px;
-  background: rgba(18, 40, 49, 0.84);
-  color: #f0fbff;
+  background: rgba(18, 43, 76, 0.78);
+  color: #e8f2ff;
   padding: 0 0.9rem;
   font-size: 1rem;
   outline: none;
 }
 
 .edit-profile-field input::placeholder {
-  color: #bfd3dc;
+  color: #afc6e3;
 }
 
 .edit-profile-field input:focus {
-  border-color: #0fe0bf;
+  border-color: #6aa6ff;
 }
 
 .edit-profile-gender-row {
@@ -2029,17 +2392,17 @@ html[data-theme="light"] .profile-logout-btn {
 
 .edit-profile-gender-btn {
   min-height: 48px;
-  border: 1px solid rgba(52, 79, 95, 0.72);
+  border: 1px solid #35527b;
   border-radius: 14px;
-  background: rgba(18, 40, 49, 0.84);
-  color: #c0d6e0;
+  background: rgba(18, 43, 76, 0.78);
+  color: #cfe2f8;
   font-size: 1rem;
 }
 
 .edit-profile-gender-btn.is-active {
-  border-color: rgba(15, 224, 191, 0.92);
-  background: rgba(8, 77, 76, 0.68);
-  color: #f2fffd;
+  border-color: #6aa6ff;
+  background: rgba(36, 76, 122, 0.78);
+  color: #f2f8ff;
 }
 
 .edit-profile-save-message {
@@ -2066,7 +2429,7 @@ html[data-theme="light"] .profile-logout-btn {
 
 .notification-settings-screen {
   min-height: 100%;
-  color: #ecfbff;
+  color: #eaf2ff;
   display: flex;
   flex-direction: column;
 }
@@ -2075,13 +2438,13 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  padding: 1.4rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .notification-panel {
-  border: 1px solid rgba(52, 79, 95, 0.72);
+  border: 1px solid #274476;
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(18, 40, 49, 0.92) 0%, rgba(18, 40, 49, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(11, 34, 63, 0.95) 0%, rgba(9, 29, 53, 0.9) 100%);
   overflow: hidden;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
@@ -2096,7 +2459,7 @@ html[data-theme="light"] .profile-logout-btn {
 }
 
 .notification-row + .notification-row {
-  border-top: 1px solid rgba(56, 83, 101, 0.46);
+  border-top: 1px solid rgba(53, 82, 123, 0.58);
 }
 
 .notification-row-main {
@@ -2170,9 +2533,9 @@ html[data-theme="light"] .profile-logout-btn {
 }
 
 .notification-info-card {
-  border: 1px solid rgba(35, 92, 156, 0.72);
+  border: 1px solid #2e5790;
   border-radius: 20px;
-  background: rgba(8, 37, 67, 0.88);
+  background: rgba(13, 39, 72, 0.86);
   padding: 1rem;
 }
 
@@ -2214,7 +2577,7 @@ html[data-theme="light"] .profile-logout-btn {
 
 .family-screen {
   min-height: 100%;
-  color: #ecfbff;
+  color: #eaf2ff;
   display: flex;
   flex-direction: column;
 }
@@ -2223,13 +2586,13 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  padding: 1.4rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .family-hero-card {
-  border: 1px solid rgba(0, 217, 165, 0.45);
+  border: 1px solid #2e5790;
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(3, 77, 72, 0.88) 0%, rgba(6, 54, 58, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(11, 44, 84, 0.92) 0%, rgba(9, 35, 65, 0.88) 100%);
   padding: 1.1rem 1rem;
   display: flex;
   align-items: flex-start;
@@ -2267,9 +2630,9 @@ html[data-theme="light"] .profile-logout-btn {
 .family-code-card,
 .family-form-card,
 .family-member-card {
-  border: 1px solid rgba(52, 79, 95, 0.72);
+  border: 1px solid #274476;
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(18, 40, 49, 0.92) 0%, rgba(18, 40, 49, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(11, 34, 63, 0.95) 0%, rgba(9, 29, 53, 0.9) 100%);
 }
 
 .family-code-card {
@@ -2487,13 +2850,13 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  padding: 1.4rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .help-hero-card {
-  border: 1px solid rgba(0, 217, 165, 0.45);
+  border: 1px solid #2e5790;
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(4, 78, 72, 0.9) 0%, rgba(8, 58, 60, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(11, 44, 84, 0.92) 0%, rgba(9, 35, 65, 0.88) 100%);
   padding: 1.05rem 1rem 1rem;
 }
 
@@ -2546,9 +2909,9 @@ html[data-theme="light"] .profile-logout-btn {
 }
 
 .help-faq-item {
-  border: 1px solid rgba(52, 79, 95, 0.72);
+  border: 1px solid #274476;
   border-radius: 18px;
-  background: linear-gradient(90deg, rgba(15, 42, 55, 0.96) 0%, rgba(24, 45, 51, 0.96) 100%);
+  background: linear-gradient(90deg, rgba(11, 34, 63, 0.96) 0%, rgba(10, 31, 57, 0.96) 100%);
   overflow: hidden;
 }
 
@@ -2608,7 +2971,7 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 0.86rem;
-  padding: 1.3rem 0 calc(var(--safe-bottom) + 0.8rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 0.8rem);
 }
 
 .medical-disclaimer-alert {
@@ -2661,9 +3024,9 @@ html[data-theme="light"] .profile-logout-btn {
 }
 
 .medical-disclaimer-card {
-  border: 1px solid rgba(56, 82, 95, 0.78);
+  border: 1px solid #274476;
   border-radius: 16px;
-  background: linear-gradient(90deg, rgba(16, 41, 53, 0.97) 0%, rgba(21, 41, 46, 0.97) 100%);
+  background: linear-gradient(90deg, rgba(11, 34, 63, 0.96) 0%, rgba(10, 31, 57, 0.96) 100%);
   min-height: 76px;
   padding: 1rem 1.05rem 0.95rem;
   display: flex;
@@ -2694,9 +3057,9 @@ html[data-theme="light"] .profile-logout-btn {
 }
 
 .medical-disclaimer-legal {
-  border: 1px solid rgba(59, 82, 92, 0.72);
+  border: 1px solid #274476;
   border-radius: 16px;
-  background: linear-gradient(90deg, rgba(18, 41, 49, 0.96) 0%, rgba(24, 42, 42, 0.94) 100%);
+  background: linear-gradient(90deg, rgba(11, 34, 63, 0.95) 0%, rgba(10, 31, 57, 0.95) 100%);
   padding: 0.95rem 1rem;
   margin-top: 0.1rem;
 }
@@ -2747,13 +3110,13 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  padding: 1.35rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .terms-update-card {
-  border: 1px solid rgba(26, 100, 179, 0.62);
+  border: 1px solid #2e5790;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(9, 42, 72, 0.98) 0%, rgba(9, 37, 61, 0.96) 100%);
+  background: linear-gradient(180deg, rgba(11, 44, 84, 0.95) 0%, rgba(9, 35, 65, 0.92) 100%);
   padding: 1.05rem 1rem;
   display: flex;
   align-items: center;
@@ -2826,13 +3189,13 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  padding: 1.35rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .privacy-hero-card {
-  border: 1px solid rgba(26, 100, 179, 0.62);
+  border: 1px solid #2e5790;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(9, 42, 72, 0.98) 0%, rgba(9, 37, 61, 0.96) 100%);
+  background: linear-gradient(180deg, rgba(11, 44, 84, 0.95) 0%, rgba(9, 35, 65, 0.92) 100%);
   padding: 1.05rem 1rem;
   display: flex;
   align-items: center;
@@ -3053,7 +3416,7 @@ html[data-theme="light"] .profile-logout-btn {
 
 .health-profile-screen {
   min-height: 100%;
-  color: #ecfbff;
+  color: #eaf2ff;
   display: flex;
   flex-direction: column;
 }
@@ -3063,13 +3426,13 @@ html[data-theme="light"] .profile-logout-btn {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  padding: 1.2rem 0 calc(var(--safe-bottom) + 1rem);
+  padding: 1rem 0 calc(var(--safe-bottom) + 1rem);
 }
 
 .health-profile-hero {
-  border: 1px solid rgba(31, 86, 131, 0.55);
+  border: 1px solid #2e5790;
   border-radius: 18px;
-  background: rgba(10, 37, 67, 0.82);
+  background: rgba(12, 43, 80, 0.82);
   padding: 1.05rem 1rem;
   display: flex;
   align-items: flex-start;
@@ -3133,21 +3496,21 @@ html[data-theme="light"] .profile-logout-btn {
 .health-profile-input-row input {
   width: 100%;
   min-height: 48px;
-  border: 1px solid rgba(52, 79, 95, 0.72);
+  border: 1px solid #35527b;
   border-radius: 14px;
-  background: rgba(18, 40, 49, 0.84);
-  color: #f0fbff;
+  background: rgba(18, 43, 76, 0.78);
+  color: #e8f2ff;
   padding: 0 0.9rem;
   font-size: 1rem;
   outline: none;
 }
 
 .health-profile-input-row input::placeholder {
-  color: #bfd3dc;
+  color: #afc6e3;
 }
 
 .health-profile-input-row input:focus {
-  border-color: #0fe0bf;
+  border-color: #6aa6ff;
 }
 
 .health-profile-add-btn {

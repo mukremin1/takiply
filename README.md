@@ -15,10 +15,15 @@ bir WebView ile Android ve iOS paketlerine donusturulur.
 `.env` dosyasina su alanlari ekleyin:
 
 ```bash
-VITE_OPENAI_API_KEY=...
-VITE_OPENAI_MODEL=gpt-4o-mini
-VITE_OPENAI_BASE_URL=https://api.openai.com/v1
+VITE_AI_PROVIDER=gemini
+VITE_GEMINI_API_KEY=...
+VITE_GEMINI_MODEL=gemini-2.0-flash-lite
+VITE_GEMINI_SUPPORT_MODEL=gemini-2.0-flash-lite
+VITE_GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta
 ```
+
+- Gemini API Free tier ile kullanabilirsiniz (kota limitleri vardir).
+- Isterseniz `VITE_OPENROUTER_API_KEY` veya `VITE_OPENAI_API_KEY` ile alternatif saglayicilara da gecebilirsiniz.
 
 ## Nobetci Eczane Ayarlari
 

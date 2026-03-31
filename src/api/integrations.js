@@ -25,6 +25,73 @@ const CITY_WIDE_NOMINATIM_LIMIT = 200;
 
 const DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 const DEFAULT_OPENAI_MODEL = "gpt-4o-mini";
+const DEFAULT_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
+const DEFAULT_OPENROUTER_MODEL = "openrouter/free";
+const DEFAULT_GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
+const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash-lite";
+const MEDICATIONS_STORAGE_KEY = "takiply_medications_v1";
+
+let medicationsHydrated = false;
+
+function hydrateMedicationsFromStorage() {
+  if (medicationsHydrated || typeof window === "undefined") {
+    return;
+  }
+
+  medicationsHydrated = true;
+
+  try {
+    const raw = window.localStorage.getItem(MEDICATIONS_STORAGE_KEY);
+
+    if (!raw) {
+      return;
+    }
+
+    const parsed = JSON.parse(raw);
+
+    if (!Array.isArray(parsed)) {
+      return;
+    }
+
+    medications.splice(0, medications.length);
+
+    parsed.forEach((item, index) => {
+      const name = getDisplayText(item?.name);
+
+      if (!name) {
+        return;
+      }
+
+      const dosage = getDisplayText(item?.dosage);
+      const schedule = getDisplayText(item?.schedule) || "Belirtilmedi";
+      const unit = getDisplayText(item?.unit) || "kutu";
+      const stockValue = Number(item?.stock);
+
+      medications.push({
+        id: getDisplayText(item?.id) || `med-restored-${index}-${Date.now()}`,
+        name,
+        dosage,
+        schedule,
+        stock: Number.isFinite(stockValue) ? stockValue : 0,
+        unit
+      });
+    });
+  } catch {
+    // Ignore storage parsing issues and continue with in-memory list.
+  }
+}
+
+function persistMedicationsToStorage() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(MEDICATIONS_STORAGE_KEY, JSON.stringify(medications));
+  } catch {
+    // Ignore storage write failures.
+  }
+}
 
 function toRadians(value) {
   return (value * Math.PI) / 180;
@@ -912,12 +979,42 @@ export async function getDashboardSummary() {
 }
 
 export async function getMedications() {
+  hydrateMedicationsFromStorage();
+
   return request(
     medications.map((item) => ({
       ...item,
       stockText: `${item.stock} ${item.unit}`
     }))
   );
+}
+
+export async function addMedication(payload = {}) {
+  hydrateMedicationsFromStorage();
+
+  const name = String(payload.name || "").trim();
+  const dosage = String(payload.dosage || "").trim();
+
+  if (!name) {
+    throw new Error("İlaç adı zorunludur.");
+  }
+
+  const createdMedication = {
+    id: `med-${Date.now()}`,
+    name: dosage ? `${name} ${dosage}` : name,
+    dosage,
+    schedule: "Belirtilmedi",
+    stock: 0,
+    unit: "kutu"
+  };
+
+  medications.unshift(createdMedication);
+  persistMedicationsToStorage();
+
+  return request({
+    ...createdMedication,
+    stockText: `${createdMedication.stock} ${createdMedication.unit}`
+  });
 }
 
 const medicationBarcodeIndex = {
@@ -957,20 +1054,52 @@ const medicationBarcodeIndex = {
 };
 
 export async function getDrugInfoByBarcode(barcode) {
-  const normalized = String(barcode || "").trim();
+  const raw = String(barcode || "").trim();
 
-  if (!normalized) {
+  if (!raw) {
     throw new Error("Barkod bilgisi bulunamadı.");
   }
 
-  const item = medicationBarcodeIndex[normalized];
+  const candidates = [];
+  const pushCandidate = (value) => {
+    const normalizedValue = String(value || "").trim();
+
+    if (!normalizedValue || candidates.includes(normalizedValue)) {
+      return;
+    }
+
+    candidates.push(normalizedValue);
+  };
+
+  pushCandidate(raw);
+  pushCandidate(raw.replace(/\s+/g, ""));
+
+  const digitsOnly = raw.replace(/\D/g, "");
+  pushCandidate(digitsOnly);
+
+  const gs1Match = raw.match(/\(?01\)?\s*(\d{14})/);
+  if (gs1Match?.[1]) {
+    pushCandidate(gs1Match[1]);
+  }
+
+  if (digitsOnly.length === 14 && digitsOnly.startsWith("0")) {
+    pushCandidate(digitsOnly.slice(1));
+  }
+
+  if (digitsOnly.length === 12) {
+    pushCandidate(`0${digitsOnly}`);
+  }
+
+  const matchedBarcode = candidates.find((candidate) => Boolean(medicationBarcodeIndex[candidate]));
+  const item = matchedBarcode ? medicationBarcodeIndex[matchedBarcode] : null;
 
   if (!item) {
     return request(null);
   }
 
   return request({
-    barcode: normalized,
+    barcode: matchedBarcode,
+    scannedBarcode: raw,
     ...item
   });
 }
@@ -1289,25 +1418,92 @@ async function fileToDataUrl(file) {
   });
 }
 
-export async function analyzePrescriptionWithAI(file) {
-  if (!(file instanceof File)) {
-    throw new Error("Geçerli bir reçete görseli seçilmedi.");
+function normalizeApiBaseUrl(value) {
+  return String(value || "").trim().replace(/\/+$/, "");
+}
+
+function parseDataUrl(dataUrl) {
+  const matched = String(dataUrl || "").match(/^data:([^;,]+);base64,(.+)$/);
+
+  if (!matched) {
+    throw new Error("Gorsel verisi gecersiz.");
   }
 
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  const baseUrl = import.meta.env.VITE_OPENAI_BASE_URL || DEFAULT_OPENAI_BASE_URL;
-  const model = import.meta.env.VITE_OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
+  return {
+    mimeType: matched[1] || "image/jpeg",
+    base64Data: matched[2]
+  };
+}
+
+function extractGeminiText(payload) {
+  const parts = payload?.candidates?.[0]?.content?.parts;
+
+  if (!Array.isArray(parts)) {
+    return "";
+  }
+
+  const textPart = parts.find((part) => typeof part?.text === "string" && part.text.trim());
+  return textPart?.text || "";
+}
+
+function resolveAiConfig() {
+  const env = import.meta.env;
+  const provider = String(env.VITE_AI_PROVIDER || (env.VITE_GEMINI_API_KEY ? "gemini" : "openrouter")).trim().toLowerCase();
+
+  if (provider === "gemini") {
+    const apiKey = env.VITE_GEMINI_API_KEY || "";
+    const baseUrl = normalizeApiBaseUrl(env.VITE_GEMINI_BASE_URL || DEFAULT_GEMINI_BASE_URL);
+    const model = env.VITE_GEMINI_MODEL || DEFAULT_GEMINI_MODEL;
+
+    return {
+      provider,
+      apiKey,
+      baseUrl,
+      model,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+  }
+
+  const apiKey = env.VITE_OPENROUTER_API_KEY || env.VITE_OPENAI_API_KEY || "";
+  const hasOpenRouterKey = Boolean(env.VITE_OPENROUTER_API_KEY);
+  const baseUrl = normalizeApiBaseUrl(
+    env.VITE_OPENAI_BASE_URL || (hasOpenRouterKey ? DEFAULT_OPENROUTER_BASE_URL : DEFAULT_OPENAI_BASE_URL)
+  );
+  const model = env.VITE_OPENAI_MODEL || (hasOpenRouterKey ? DEFAULT_OPENROUTER_MODEL : DEFAULT_OPENAI_MODEL);
+  const isOpenRouter = baseUrl.includes("openrouter.ai");
+
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${apiKey}`
+  };
+
+  if (isOpenRouter) {
+    headers["HTTP-Referer"] = env.VITE_OPENROUTER_SITE_URL || window?.location?.origin || "https://takiply.app";
+    headers["X-Title"] = env.VITE_OPENROUTER_APP_NAME || "Takiply";
+  }
+
+  return { provider, apiKey, baseUrl, model, headers };
+}
+
+export async function analyzePrescriptionWithAI(file) {
+  if (!(file instanceof File)) {
+    throw new Error("Gecerli bir recete gorseli secilmedi.");
+  }
+
+  const { provider, apiKey, baseUrl, model, headers } = resolveAiConfig();
 
   if (!apiKey) {
-    throw new Error("AI ayarları eksik. .env dosyasına VITE_OPENAI_API_KEY ekleyin.");
+    throw new Error("AI ayarlari eksik. .env dosyasina VITE_GEMINI_API_KEY veya VITE_OPENROUTER_API_KEY veya VITE_OPENAI_API_KEY ekleyin.");
   }
 
   const imageDataUrl = await fileToDataUrl(file);
 
   const prompt = [
-    "Aşağıdaki reçete görselini Türkçe olarak analiz et.",
-    "Sadece JSON döndür, açıklama yazma.",
-    "JSON şeması:",
+    "Asagidaki recete gorselini Turkce olarak analiz et.",
+    "Sadece JSON dondur, aciklama yazma.",
+    "JSON semasi:",
     "{",
     '  "patient": "string",',
     '  "doctor": "string",',
@@ -1319,48 +1515,87 @@ export async function analyzePrescriptionWithAI(file) {
     '  "interactions": ["string"],',
     '  "notes": ["string"]',
     "}",
-    "Alan bulunamazsa boş string veya boş dizi döndür."
+    "Alan bulunamazsa bos string veya bos dizi dondur."
   ].join("\n");
 
-  const response = await fetch(`${baseUrl}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model,
-      temperature: 0.1,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            {
-              type: "image_url",
-              image_url: {
-                url: imageDataUrl
-              }
-            }
-          ]
-        }
-      ]
-    })
-  });
+  let content = "";
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`AI analiz hatası: ${response.status} ${errorText}`);
+  if (provider === "gemini") {
+    const { mimeType, base64Data } = parseDataUrl(imageDataUrl);
+    const response = await fetch(`${baseUrl}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: prompt },
+              {
+                inline_data: {
+                  mime_type: mimeType,
+                  data: base64Data
+                }
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.1,
+          responseMimeType: "application/json"
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`AI analiz hatasi: ${response.status} ${errorText}`);
+    }
+
+    const payload = await response.json();
+    content = extractGeminiText(payload);
+  } else {
+    const response = await fetch(`${baseUrl}/chat/completions`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        model,
+        temperature: 0.1,
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: {
+                  url: imageDataUrl
+                }
+              }
+            ]
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`AI analiz hatasi: ${response.status} ${errorText}`);
+    }
+
+    const payload = await response.json();
+    content = payload?.choices?.[0]?.message?.content;
   }
 
-  const payload = await response.json();
-  const content = payload?.choices?.[0]?.message?.content;
-
   if (!content || typeof content !== "string") {
-    throw new Error("AI cevabı boş veya geçersiz.");
+    throw new Error("AI cevabi bos veya gecersiz.");
   }
 
   const parsed = JSON.parse(stripMarkdownCodeFence(content));
   return normalizeAnalysisPayload(parsed);
 }
+
+
+
+

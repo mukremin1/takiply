@@ -1,8 +1,4 @@
-export const medications = [
-  { id: "med-1", name: "Parol 500mg", schedule: "08:00 - 20:00", stock: 12, unit: "tablet" },
-  { id: "med-2", name: "Ventolin", schedule: "Gerektikçe", stock: 1, unit: "inhaler" },
-  { id: "med-3", name: "B12", schedule: "Her sabah", stock: 20, unit: "tablet" }
-];
+export const medications = [];
 
 export const pharmacies = [
   {
@@ -38,3 +34,4 @@ export const vitals = [
   { id: "vit-4", type: "Kan Şekeri", value: "102", loggedAt: "2026-03-05" },
   { id: "vit-5", type: "Oksijen", value: "%97", loggedAt: "2026-03-05" }
 ];
+

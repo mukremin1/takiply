@@ -546,7 +546,7 @@ function PharmacyMap({
 
         setRouteState({
           loading: false,
-          error: "Canli rota su an olusturulamadi.",
+          error: "Canlı rota şu an oluşturulamadı.",
           summary: ""
         });
       });
@@ -606,15 +606,15 @@ function PharmacyMap({
   }, [activePharmacy, isLoaded, userCoords, validPharmacies]);
 
   if (!GOOGLE_MAPS_API_KEY) {
-    return <div className="pharmacy-map-fallback">Google Maps API anahtari tanimli degil.</div>;
+    return <div className="pharmacy-map-fallback">Google Maps API anahtarı tanımlı değil.</div>;
   }
 
   if (loadError) {
-    return <div className="pharmacy-map-fallback">Google Maps su anda yuklenemedi.</div>;
+    return <div className="pharmacy-map-fallback">Google Maps şu anda yüklenemedi.</div>;
   }
 
   if (!isLoaded) {
-    return <div className="pharmacy-map-fallback">Harita yukleniyor...</div>;
+    return <div className="pharmacy-map-fallback">Harita yükleniyor...</div>;
   }
 
   return (
@@ -918,7 +918,7 @@ export default function Pharmacy() {
           );
 
           if (nextDutyData.length) {
-            setLocationStatus(`Konuma gore ${mergedData.length} eczane bulundu. ${nextDutyData.length} nobetci eczane listelendi.`);
+            setLocationStatus(`Konuma göre ${mergedData.length} eczane bulundu. ${nextDutyData.length} nöbetçi eczane listelendi.`);
           }
         })
         .catch(() => {
@@ -967,7 +967,7 @@ export default function Pharmacy() {
       const dutyData = await getOnDutyPharmacies({ city, district });
 
       // ✅ DEBUG: Nöbetçi Eczane Koordinat Kontrolü
-      console.log("📍 NÖBETÇI ECZANE VERİ ANALIZI");
+      console.log("📍 NÖBETÇİ ECZANE VERİ ANALİZİ");
       console.log("─".repeat(50));
       console.log(`✅ Toplam nöbetçi eczane: ${dutyData.length}`);
 
@@ -1061,7 +1061,7 @@ export default function Pharmacy() {
     const district = manualDistrict.trim();
 
     if (!city) {
-      setLocationStatus("Tum eczaneler icin once sehir girin.");
+      setLocationStatus("Tüm eczaneler için önce şehir girin.");
       setActiveTab("map");
       return;
     }
@@ -1115,8 +1115,8 @@ export default function Pharmacy() {
     } catch (error) {
       const errorMessage =
         error instanceof Error && error.message
-          ? `Sehre gore eczane verisi alinamadi: ${error.message}`
-          : "Sehre gore eczane verisi alinamadi.";
+          ? `Şehre göre eczane verisi alınamadı: ${error.message}`
+          : "Şehre göre eczane verisi alınamadı.";
       setLocationStatus(errorMessage);
     } finally {
       setLoading(false);
@@ -1467,13 +1467,13 @@ export default function Pharmacy() {
     if (activeTab === "favorites") {
       items.push({ kind: "favorite", text: `${visibleCount} favori eczane` });
     } else if (activeTab === "onDuty") {
-      items.push({ kind: "duty", text: `${visibleCount} nobetci eczane` });
+      items.push({ kind: "duty", text: `${visibleCount} nöbetçi eczane` });
     } else {
-      items.push({ kind: "nearby", text: `Yakinda ${visibleCount} eczane` });
+      items.push({ kind: "nearby", text: `Yakında ${visibleCount} eczane` });
     }
 
     if (activeTab === "map" && onDutyCount) {
-      items.push({ kind: "duty", text: `${onDutyCount} nobetci` });
+      items.push({ kind: "duty", text: `${onDutyCount} nöbetçi` });
     }
 
     if (favoriteCountInView && activeTab !== "favorites") {
@@ -1483,7 +1483,7 @@ export default function Pharmacy() {
     if (query.trim()) {
       items.push({ kind: "search", text: `Arama: ${query.trim()}` });
     } else if (activePharmacy?.name) {
-      items.push({ kind: "active", text: `Secili: ${activePharmacy.name}` });
+      items.push({ kind: "active", text: `Seçili: ${activePharmacy.name}` });
     }
 
     if (userCoords && locationAccuracy) {
@@ -1653,7 +1653,7 @@ export default function Pharmacy() {
           </p>
           <p className="pharmacy-sheet-status">{locationStatus}</p>
           <p className="pharmacy-sheet-status">
-            Debug: yakin {debugStats.nearbyCount}, nobetci {debugStats.onDutyCount}, toplam {debugStats.mergedCount}, koordinatli {debugStats.validCoordinatePharmacies}, marker {debugStats.renderedMarkers}
+            Debug: yakın {debugStats.nearbyCount}, nöbetçi {debugStats.onDutyCount}, toplam {debugStats.mergedCount}, koordinatlı {debugStats.validCoordinatePharmacies}, marker {debugStats.renderedMarkers}
           </p>
           {debugSamples.length ? (
             <div className="pharmacy-debug-block">
@@ -1671,7 +1671,7 @@ export default function Pharmacy() {
             </p>
           ) : null}
           {routeSummary.summary ? (
-            <p className="pharmacy-sheet-status">Secili rota: {routeSummary.summary}</p>
+            <p className="pharmacy-sheet-status">Seçili rota: {routeSummary.summary}</p>
           ) : null}
           {routeSummary.error ? (
             <p className="pharmacy-sheet-status">{routeSummary.error}</p>
@@ -1704,7 +1704,7 @@ export default function Pharmacy() {
                     setManualDistrict("");
                   }}
                 >
-                  <option value="">Sehir sec</option>
+                  <option value="">Şehir seç</option>
                   {cityOptions.map((city) => (
                     <option key={city} value={city}>
                       {city}
@@ -1716,7 +1716,7 @@ export default function Pharmacy() {
                   onChange={(event) => setManualDistrict(event.target.value)}
                   disabled={!districtOptions.length}
                 >
-                  <option value="">{districtOptions.length ? "Ilce sec (opsiyonel)" : "Once sehir sec"}</option>
+                  <option value="">{districtOptions.length ? "İlçe seç (opsiyonel)" : "Önce şehir seç"}</option>
                   {districtOptions.map((district) => (
                     <option key={district} value={district}>
                       {district}
@@ -1724,7 +1724,7 @@ export default function Pharmacy() {
                   ))}
                 </select>
                 <button type="button" onClick={loadPharmaciesByManualLocation} disabled={loading}>
-                  Sehre gore eczane ara
+                  Şehre göre eczane ara
                 </button>
               </div>
             ) : null}
@@ -1737,7 +1737,7 @@ export default function Pharmacy() {
                     setManualDistrict("");
                   }}
                 >
-                  <option value="">Sehir sec</option>
+                  <option value="">Şehir seç</option>
                   {cityOptions.map((city) => (
                     <option key={city} value={city}>
                       {city}
@@ -1749,7 +1749,7 @@ export default function Pharmacy() {
                   onChange={(event) => setManualDistrict(event.target.value)}
                   disabled={!districtOptions.length}
                 >
-                  <option value="">{districtOptions.length ? "Ilce sec" : "Once sehir sec"}</option>
+                  <option value="">{districtOptions.length ? "İlçe seç" : "Önce şehir seç"}</option>
                   {districtOptions.map((district) => (
                     <option key={district} value={district}>
                       {district}
@@ -1761,7 +1761,7 @@ export default function Pharmacy() {
                   onClick={loadOnDutyByManualLocation}
                   disabled={loading || !manualCity || !manualDistrict}
                 >
-                  Sehre gore nobetci ara
+                  Şehre göre nöbetçi ara
                 </button>
               </div>
             ) : null}

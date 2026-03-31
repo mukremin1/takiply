@@ -84,7 +84,7 @@ export const turkishCities = [
 // Her ilin önemli ilçeleri (nöbetçi eczane için)
 export const cityDistricts = {
   "İstanbul": ["Avcılar", "Bağcılar", "Bahçelievler", "Beşiktaş", "Eyüp", "Fatih", "Kadıköy", "Kağıthane", "Kartal", "Küçükçekmece", "Maltepe", "Pendik", "Sarıyer", "Sultanbeyli", "Şişli", "Üsküdar", "Zeytinburnu"],
-  "Ankara": ["Altındağ", "Çankaya", "Etimesgut", "Keçiören", "MSincan", "amak", "Yenimahalle", "Polatlı", "Gölbaşı", "Kahramankazan"],
+  "Ankara": ["Altındağ", "Çankaya", "Etimesgut", "Keçiören", "Sincan", "Mamak", "Yenimahalle", "Polatlı", "Gölbaşı", "Kahramankazan"],
   "İzmir": ["Bornova", "Buca", "Çiğli", "Gaziemir", "Karşıyaka", "Konak", "Menemen", "Torbalı", "Urla", "Alsancak"],
   "Bursa": ["Nilüfer", "Osmangazi", "Yıldırım", "Mudanya", "Gemlik", "İnegöl", "Karacabey", "Mustafakemalpaşa"],
   "Antalya": ["Alanya", "Antalya Merkez", "Belek", "Kemer", "Konyaaltı", "Muratpaşa", "Serik", "Manavgat", "Kaş"],
@@ -94,7 +94,7 @@ export const cityDistricts = {
   "Mersin": ["Akdeniz", "Anamur", "Aydıncık", "Bozyazı", "Çamlıyayla", "Erdemli", "Gülnar", "Mezitli", "Mut", "Silifke", "Tarsus", "Toroslar", "Yenişehir"],
   "Diyarbakır": ["Bağlar", "Bismil", "Çermik", "Çınar", "Çüngüş", "Dicle", "Eğil", "Ergani", "Hani", "Hazro", "Kayapınar", "Kocaköy", "Lice", "Silvan", "Sur", "Yenişehir"],
   "Şanlıurfa": ["Akçakale", "Birecik", "Bozova", "Ceylanpınar", "Eyyübiye", "Göbeklitepe", "Halfeti", "Harran", "Hilvan", "Karaköprü", "Siverek", "Suruç", "Viranşehir"],
-  "Samsun": ["Alaçam", "Asarcık", "Atakum", "Ayvacık", "Bafra", "Canik", "Çarşamba", "Havza", "İlkadım", "Kavak", "Ladik", "19 Mayıs", "Salıpazarı", "Tekkeköy", "Terme", "Vezirköre", "Yakakent"],
+  "Samsun": ["Alaçam", "Asarcık", "Atakum", "Ayvacık", "Bafra", "Canik", "Çarşamba", "Havza", "İlkadım", "Kavak", "Ladik", "19 Mayıs", "Salıpazarı", "Tekkeköy", "Terme", "Vezirköprü", "Yakakent"],
   "Kayseri": ["Akkışla", "Bünyan", "Develi", "Felahiye", "Hacılar", "İncesu", "Kocasinan", "Melikgazi", "Özvatan", "Pınarbaşı", "Sarıoğlan", "Sarız", "Talas", "Tomarza", "Yahyasaray", "Yeşilhisar"],
   "Denizli": ["Acıpayam", "Babadağ", "Baklan", "Bekilli", "Beyağaç", "Bozkurt", "Buldan", "Çal", "Çameli", "Çardak", "Çivril", "Güney", "Honaz", "Kale", "Merkezefendi", "Pamukkale", "Sarayköy", "Serinhisar", "Tavas"],
   "Eskişehir": ["Alpu", "Beylikova", "Çifteler", "Günyüzü", "Han", "İnönü", "Mahmudiye", "Mihalgazi", "Mihallıççık", "Odunpazarı", "Sarıcakaya", "Seyitgazi", "Sivrihisar", "Tepebaşı"],
@@ -121,7 +121,7 @@ export const cityDistricts = {
   "Tokat": ["Almus", "Artova", "Başçiftlik", "Erbaa", "Niksar", "Pazar", "Reşadiye", "Sulusaray", "Tokat Merkez", "Turhal", "Yeşilyurt", "Zile"],
   "Çankırı": ["Atkaracalar", "Bayramören", "Çankırı Merkez", "Çerkes", "Eldivan", "Ilgaz", "Kızılırmak", "Korgun", "Kurşunlu", "Orta", "Şabanözü", "Yapraklı"],
   "Artvin": ["Ardanuç", "Arhavi", "Artvin Merkez", "Borçka", "Hopa", "Kemalpaşa", "Murgul", "Şavşat", "Yusufeli"],
-  "Erzurum": ["Aşkale", "Aziziye", "Çat", "Erzurum Merkez", "Hınıs", "Horasan", "İspir", "Karaçoban", "Karayazı", "Köprüköy", "Narman", "Oltu", "Olur", "Palandöken", "Pasinler", " Pazaryolu", "Şenkaya", "Tekman", "Tortum", "Uzundere"],
+  "Erzurum": ["Aşkale", "Aziziye", "Çat", "Erzurum Merkez", "Hınıs", "Horasan", "İspir", "Karaçoban", "Karayazı", "Köprüköy", "Narman", "Oltu", "Olur", "Palandöken", "Pasinler", "Pazaryolu", "Şenkaya", "Tekman", "Tortum", "Uzundere"],
   "Kars": ["Akyaka", "Arpaçay", "Digor", "Kağızman", "Kars Merkez", "Sarıkamış", "Selim", "Susuz"],
   "Sivas": ["Akıncılar", "Altınyayla", "Divriği", "Doğanşar", "Gemerek", "Gölova", "Gürün", "Hafik", "İmranlı", "Kangal", "Koyulhisar", "Merkez", "Sarıkamış", "Suşehri", "Şarkışla", "Ulaş", "Yıldızeli", "Zara"],
   "Kırıkkale": ["Bahşili", "Balışeyh", "Çelebi", "Delice", "Karakeçili", "Keskin", "Kırıkkale Merkez", "Sulakyurt", "Yahşihan"],
@@ -134,7 +134,7 @@ export const cityDistricts = {
   "Hakkari": ["Çukurdere", "Hakkari Merkez", "Şemdinli", "Yüksekova"],
   "Van": ["Başkale", "Çaldıran", "Çatak", "Edremit", "Erciş", "Gevaş", "Gürpınar", "İpekyolu", "Muradiye", "Özalp", "Tuşba"],
   "Tunceli": ["Çemişgezek", "Hozat", "Mazgirt", "Merkez", "Nazımiye", "Ovacık", "Pertek", "Pülümür"],
-  "Şırnak": ["Beytüşşurap", "Cizre", "Güçlükonak", "İdil", "Merkez", "Silopi", "Uludere"],
+  "Şırnak": ["Beytüşşebap", "Cizre", "Güçlükonak", "İdil", "Merkez", "Silopi", "Uludere"],
   "Kilis": ["Elbeyli", "Kilis Merkez", "Musabeyli", "Polateli"],
   "Muş": ["Bulanık", "Korkut", "Malazgirt", "Merkez", "Varto"],
   "Bartın": ["Amasra", "Bartın Merkez", "Kurucaşile", "Ulus"],
@@ -152,7 +152,7 @@ export const cityDistricts = {
   "Uşak": ["Banaz", "Eşme", "Karahallı", "Sivaslı", "Ulubey", "Uşak Merkez"],
   "Kayseri": ["Kocasinan", "Melikgazi", "Talas", "Sarıoğlan", "Sarız", "Bünyan", "Develi", "Akkışla", "Felahiye", "Özvatan", "Yeşilhisar", "İncesu", "Sarıoğlan"],
   "Osmaniye": ["Bahçe", "Düziçi", "Hasanbeyli", "Kadirli", "Merkez", "Sumbas", "Toprakkale"],
-  "Samsun": ["Atakum", "Canik", "İlkadım", "Tekkeköy", "Bafra", "Çarşamba", "Terme", "Vezirköpru", "Havza", "Ladik"],
+  "Samsun": ["Atakum", "Canik", "İlkadım", "Tekkeköy", "Bafra", "Çarşamba", "Terme", "Vezirköprü", "Havza", "Ladik"],
   "Düzce": ["Akçakoca", "Düzce Merkez", "Kaynaşlı", "Gölyaka", "Çilimli", "Yığılca", "Gümüşova"]
 };
 

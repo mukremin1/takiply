@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "489141779565-hf9cb5g9vtaa93ov9u4si195bafsidlj.apps.googleusercontent.com",
+          "client_id": "489141779565-6vtrsj4dpi8mtfomr8kchpkc3ffj6uf7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.takiply",
-            "certificate_hash": "0284e314575c841a08c9235a983dbcb15b7a5ef2"
+            "certificate_hash": "b2397b409341dd7e9766c2481e01759652bfadfa"
           }
         },
         {

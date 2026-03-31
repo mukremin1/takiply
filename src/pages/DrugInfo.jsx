@@ -1,14 +1,19 @@
 ﻿import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { getDrugInfoByBarcode } from "../api/integrations";
 
 export default function DrugInfo() {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const barcode = (searchParams.get("barcode") || "").trim();
+  const prefetchedDrug = location.state?.prefetchedDrug;
+  const hasMatchingPrefetch = Boolean(
+    prefetchedDrug && String(prefetchedDrug.barcode || "").trim() === String(barcode || "").trim()
+  );
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(Boolean(barcode) && !hasMatchingPrefetch);
   const [error, setError] = useState("");
-  const [drug, setDrug] = useState(null);
+  const [drug, setDrug] = useState(hasMatchingPrefetch ? prefetchedDrug : null);
 
   useEffect(() => {
     let active = true;
@@ -29,11 +34,28 @@ export default function DrugInfo() {
       };
     }
 
+    if (hasMatchingPrefetch) {
+      Promise.resolve().then(() => {
+        if (!active) {
+          return;
+        }
+
+        setDrug(prefetchedDrug);
+        setError("");
+        setLoading(false);
+      });
+
+      return () => {
+        active = false;
+      };
+    }
+
     Promise.resolve().then(() => {
       if (!active) {
         return;
       }
 
+      setDrug(null);
       setLoading(true);
       setError("");
     });
@@ -62,7 +84,7 @@ export default function DrugInfo() {
     return () => {
       active = false;
     };
-  }, [barcode]);
+  }, [barcode, hasMatchingPrefetch, prefetchedDrug]);
 
   return (
     <section className="space-y-4">

@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { browserPopupRedirectResolver, inMemoryPersistence, initializeAuth } from "firebase/auth";
+import {
+  browserLocalPersistence,
+  browserPopupRedirectResolver,
+  browserSessionPersistence,
+  indexedDBLocalPersistence,
+  initializeAuth
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -20,7 +26,7 @@ const app = firebaseConfigError ? null : initializeApp(firebaseConfig);
 
 export const auth = app
   ? initializeAuth(app, {
-      persistence: inMemoryPersistence,
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
       popupRedirectResolver: typeof window === "undefined" ? undefined : browserPopupRedirectResolver
     })
   : null;
