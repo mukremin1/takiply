@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "489141779565-6g6tpemt3ohqk72uq2th6g01lpa6mh6r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.takiply",
+            "certificate_hash": "8fc2c8eddcedb44dae56d8a9e7c33f6c20d56f2b"
+          }
+        },
+        {
           "client_id": "489141779565-6vtrsj4dpi8mtfomr8kchpkc3ffj6uf7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.takiply",
             "certificate_hash": "b2397b409341dd7e9766c2481e01759652bfadfa"
+          }
+        },
+        {
+          "client_id": "489141779565-j1kbr9ttjl0fagam9co5rbeqni56dajg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.takiply",
+            "certificate_hash": "5d1d0c15528dc403121fe2dd0e63f825bff5412a"
           }
         },
         {

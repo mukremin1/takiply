@@ -99,6 +99,13 @@ function mapFirebaseError(error) {
       if (errorMessage.includes("DEVELOPER_ERROR") || errorMessage.includes("12500")) {
         return "Google girişi ayarları eksik. Firebase'e Android SHA-1/SHA-256 imzalarını ekleyin.";
       }
+      if (
+        errorMessage.includes("default_web_client_id") ||
+        errorMessage.includes("10: Developer error") ||
+        errorMessage.includes("16: Cannot find a matching credential")
+      ) {
+        return "Google girişi tamamlanamadı. Firebase Android OAuth kurulumu (SHA-1/SHA-256 ve Web client id) kontrol edilmeli.";
+      }
       return errorMessage || "Kimlik doğrulama işlemi başarısız.";
   }
 }
@@ -149,6 +156,17 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
+    if (Capacitor.isNativePlatform()) {
+      FirebaseAuthentication.getCurrentUser()
+        .then((nativeResult) => {
+          if (!auth.currentUser && nativeResult?.user) {
+            setCurrentUser(formatUser(nativeResult.user));
+          }
+        })
+        .catch(() => null)
+        .finally(() => setLoading(false));
+    }
+
     getRedirectResult(auth).catch(() => null);
 
     return unsubscribe;
@@ -193,15 +211,45 @@ export function AuthProvider({ children }) {
       if (provider === "google" && Capacitor.isNativePlatform()) {
         // Clear any cached Google session first so the account chooser can show all device accounts.
         await FirebaseAuthentication.signOut().catch(() => null);
-        const nativeResult = await FirebaseAuthentication.signInWithGoogle({
-          skipNativeAuth: true,
-          useCredentialManager: true
-        });
-        const credential = nativeResult?.credential;
-        const idToken = credential?.idToken;
-        const accessToken = credential?.accessToken;
+        const getTokensFromNativeResult = (nativeResult) => {
+          const credential = nativeResult?.credential ?? null;
+          return {
+            idToken: credential?.idToken ?? nativeResult?.idToken ?? null,
+            accessToken: credential?.accessToken ?? nativeResult?.accessToken ?? null
+          };
+        };
+
+        let tokenBundle;
+        let latestNativeResult = null;
+        try {
+          const nativeResult = await FirebaseAuthentication.signInWithGoogle({
+            skipNativeAuth: true,
+            useCredentialManager: true
+          });
+          latestNativeResult = nativeResult;
+          tokenBundle = getTokensFromNativeResult(nativeResult);
+        } catch (credentialManagerError) {
+          const nativeResult = await FirebaseAuthentication.signInWithGoogle({
+            skipNativeAuth: true,
+            useCredentialManager: false
+          });
+          latestNativeResult = nativeResult;
+          tokenBundle = getTokensFromNativeResult(nativeResult);
+
+          if (!tokenBundle.idToken && !tokenBundle.accessToken) {
+            throw credentialManagerError;
+          }
+        }
+
+        const { idToken, accessToken } = tokenBundle;
 
         if (!idToken && !accessToken) {
+          if (latestNativeResult?.user) {
+            scheduleNextReauth();
+            const fallbackUser = formatUser(latestNativeResult.user);
+            setCurrentUser(fallbackUser);
+            return fallbackUser;
+          }
           throw new Error("Google kimlik bilgisi alınamadı.");
         }
 
